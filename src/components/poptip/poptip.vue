@@ -194,16 +194,18 @@
         mounted () {
             if (!this.confirm) {
 //                this.showTitle = this.$refs.title.innerHTML != `<div class="${prefixCls}-title-inner"></div>`;
-                this.showTitle = this.$slots.title !== undefined;
+                this.showTitle = (this.$slots.title !== undefined) || this.title;
             }
             // if trigger and children is input or textarea,listen focus & blur event
             if (this.trigger === 'focus') {
-                const $children = this.getInputChildren();
-                if ($children) {
-                    $children.addEventListener('focus', this.handleFocus, false);
-                    $children.addEventListener('blur', this.handleBlur, false);
-                    this.isInput = true;
-                }
+                this.$nextTick(() => {
+                    const $children = this.getInputChildren();
+                    if ($children) {
+                        this.isInput = true;
+                        $children.addEventListener('focus', this.handleFocus, false);
+                        $children.addEventListener('blur', this.handleBlur, false);
+                    }
+                });
             }
         },
         beforeDestroy () {
